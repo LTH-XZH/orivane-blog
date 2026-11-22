@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://orivane.me/sitemap-index.xml

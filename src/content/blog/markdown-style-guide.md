@@ -1,214 +1,80 @@
 ---
-title: 'Markdown Style Guide'
-description: 'Here is a sample of some basic Markdown syntax that can be used when writing Markdown content in Astro.'
-pubDate: 'Jun 19 2024'
-heroImage: '../../assets/blog-placeholder-1.jpg'
+title: 'Markdown 写作清单'
+description: '这个站支持哪些写法，以及它们各自长什么样。'
+pubDate: '2026-09-12'
+category: '开始写作の示例文'
+tags: ['Markdown', '写作']
 ---
 
-Here is a sample of some basic Markdown syntax that can be used when writing Markdown content in Astro.
+写文章只用 Markdown，不碰 HTML。这篇把常用的写法列一遍，也顺便当排版的验收样张——每一节的样式都是我想要的，看到不对就是 CSS 出问题了。
 
-## Headings
+## 标题层级
 
-The following HTML `<h1>`—`<h6>` elements represent six levels of section headings. `<h1>` is the highest section level while `<h6>` is the lowest.
+文章标题由 frontmatter 的 `title` 决定，正文里从 `##` 开始用。`##` 是分节，前面会自动带一条强调色短线；`###` 是次级标题，再往下就用得很少了。
 
-# H1
+### 这是三级标题
 
-## H2
+正文里的粗体用 `**加粗**`，斜体用 `*倾斜*`，行内代码用反引号，比如 `npm run build`。
 
-### H3
+## 图片
 
-#### H4
+图片按正文宽度显示，不加圆角、不居中放大：
 
-##### H5
+![博客占位图](../../assets/blog-placeholder-about.jpg)
 
-###### H6
+## 引用
 
-## Paragraph
+> 排版不是装饰，是让读者忘记排版。
+>
+> —— 某个深夜改 CSS 的人
 
-Xerum, quo qui aut unt expliquam qui dolut labo. Aque venitatiusda cum, voluptionse latur sitiae dolessi aut parist aut dollo enim qui voluptate ma dolestendit peritin re plis aut quas inctum laceat est volestemque commosa as cus endigna tectur, offic to cor sequas etum rerum idem sintibus eiur? Quianimin porecus evelectur, cum que nis nust voloribus ratem aut omnimi, sitatur? Quiatem. Nam, omnis sum am facea corem alique molestrunt et eos evelece arcillit ut aut eos eos nus, sin conecerem erum fuga. Ri oditatquam, ad quibus unda veliamenimin cusam et facea ipsamus es exerum sitate dolores editium rerore eost, temped molorro ratiae volorro te reribus dolorer sperchicium faceata tiustia prat.
+## 表格
 
-Itatur? Quiatae cullecum rem ent aut odis in re eossequodi nonsequ idebis ne sapicia is sinveli squiatum, core et que aut hariosam ex eat.
+| 用途 | 文件位置 | 备注 |
+| :-- | :-- | :-- |
+| 文章 | `src/content/blog/` | 一个文件一篇 |
+| 组件 | `src/components/` | 可复用 |
+| 样式 | `src/styles/global.css` | 全站唯一 |
 
-## Images
-
-### Syntax
-
-```markdown
-![Alt text](./full/or/relative/path/of/image)
-```
-
-### Output
-
-![blog placeholder](../../assets/blog-placeholder-about.jpg)
-
-## Blockquotes
-
-The blockquote element represents content that is quoted from another source, optionally with a citation which must be within a `footer` or `cite` element, and optionally with in-line changes such as annotations and abbreviations.
-
-### Blockquote without attribution
-
-#### Syntax
-
-```markdown
-> Tiam, ad mint andaepu dandae nostion secatur sequo quae.  
-> **Note** that you can use _Markdown syntax_ within a blockquote.
-```
-
-#### Output
-
-> Tiam, ad mint andaepu dandae nostion secatur sequo quae.  
-> **Note** that you can use _Markdown syntax_ within a blockquote.
-
-### Blockquote with attribution
-
-#### Syntax
-
-```markdown
-> Don't communicate by sharing memory, share memory by communicating.<br>
-> — <cite>Rob Pike[^1]</cite>
-```
-
-#### Output
-
-> Don't communicate by sharing memory, share memory by communicating.<br>
-> — <cite>Rob Pike[^1]</cite>
-
-[^1]: The above quote is excerpted from Rob Pike's [talk](https://www.youtube.com/watch?v=PAAkCSZUG1c) during Gopherfest, November 18, 2015.
-
-## Tables
-
-### Syntax
-
-```markdown
-| Italics   | Bold     | Code   |
-| --------- | -------- | ------ |
-| _italics_ | **bold** | `code` |
-```
-
-### Output
-
-| Italics   | Bold     | Code   |
-| --------- | -------- | ------ |
-| _italics_ | **bold** | `code` |
-
-## Code Blocks
-
-### Syntax
-
-we can use 3 backticks ``` in new line and write snippet and close with 3 backticks on new line and to highlight language specific syntax, write one word of language name after first 3 backticks, for eg. html, javascript, css, markdown, typescript, txt, bash
-
-````markdown
-```html
-<!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Example HTML5 Document</title>
-  </head>
-  <body>
-    <p>Test</p>
-  </body>
-</html>
-```
-````
-
-### Output
+## 代码块
 
 ```html
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <title>Example HTML5 Document</title>
-  </head>
-  <body>
-    <p>Test</p>
-  </body>
+<html lang="zh-CN">
+	<head>
+		<meta charset="utf-8" />
+		<title>示例</title>
+	</head>
+	<body>
+		<p>一段代码</p>
+	</body>
 </html>
 ```
 
-## List Types
+## 列表
 
-### Ordered List
+有序列表：
 
-#### Syntax
+1. 先写标题
+2. 再写摘要
+3. 最后才是正文
 
-```markdown
-1. First item
-2. Second item
-3. Third item
-```
+无序列表：
 
-#### Output
+- 不要为了凑字数加列表
+- 列表项不超过一行最好
+	- 嵌套也可以，但别太深
 
-1. First item
-2. Second item
-3. Third item
+## 其他零碎
 
-### Unordered List
+行内键盘按键：<kbd>Ctrl</kbd> + <kbd>S</kbd>。
 
-#### Syntax
+标记重点：<mark>这句话是重点</mark>。
 
-```markdown
-- List item
-- Another item
-- And another item
-```
+缩写：<abbr title="Cascading Style Sheets">CSS</abbr> 并不难。
 
-#### Output
+化学式与上标：H<sub>2</sub>O、X<sup>2</sup>。
 
-- List item
-- Another item
-- And another item
+## 一篇好文章的样子
 
-### Nested list
-
-#### Syntax
-
-```markdown
-- Fruit
-  - Apple
-  - Orange
-  - Banana
-- Dairy
-  - Milk
-  - Cheese
-```
-
-#### Output
-
-- Fruit
-  - Apple
-  - Orange
-  - Banana
-- Dairy
-  - Milk
-  - Cheese
-
-## Other Elements — abbr, sub, sup, kbd, mark
-
-### Syntax
-
-```markdown
-<abbr title="Graphics Interchange Format">GIF</abbr> is a bitmap image format.
-
-H<sub>2</sub>O
-
-X<sup>n</sup> + Y<sup>n</sup> = Z<sup>n</sup>
-
-Press <kbd>CTRL</kbd> + <kbd>ALT</kbd> + <kbd>Delete</kbd> to end the session.
-
-Most <mark>salamanders</mark> are nocturnal, and hunt for insects, worms, and other small creatures.
-```
-
-### Output
-
-<abbr title="Graphics Interchange Format">GIF</abbr> is a bitmap image format.
-
-H<sub>2</sub>O
-
-X<sup>n</sup> + Y<sup>n</sup> = Z<sup>n</sup>
-
-Press <kbd>CTRL</kbd> + <kbd>ALT</kbd> + <kbd>Delete</kbd> to end the session.
-
-Most <mark>salamanders</mark> are nocturnal, and hunt for insects, worms, and other small creatures.
+写完最后一段，回头检查三件事：**标题是否准确、摘要是否诚实、有没有一句话是多余的**。第三件最难，也最值得做。

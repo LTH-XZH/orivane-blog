@@ -2,34 +2,23 @@
 
 import mdx from '@astrojs/mdx';
 import sitemap from '@astrojs/sitemap';
-import { defineConfig, fontProviders } from 'astro/config';
+import { defineConfig } from 'astro/config';
 
 // https://astro.build/config
 export default defineConfig({
-	site: 'https://example.com',
+	// 正式域名。canonical、RSS、sitemap 都从这里取，换域名只改这一行。
+	site: 'https://orivane.me',
+	// 关掉开发工具栏（底部那条悬浮胶囊，只在 npm run dev 时出现）
+	devToolbar: { enabled: false },
 	integrations: [mdx(), sitemap()],
-	fonts: [
-		{
-			provider: fontProviders.local(),
-			name: 'Atkinson',
-			cssVariable: '--font-atkinson',
-			fallbacks: ['sans-serif'],
-			options: {
-				variants: [
-					{
-						src: ['./src/assets/fonts/atkinson-regular.woff'],
-						weight: 400,
-						style: 'normal',
-						display: 'swap',
-					},
-					{
-						src: ['./src/assets/fonts/atkinson-bold.woff'],
-						weight: 700,
-						style: 'normal',
-						display: 'swap',
-					},
-				],
+	markdown: {
+		// 代码块双主题：亮暗切换由 CSS 里的 --shiki-* 变量完成，不重排不高亮两次
+		shikiConfig: {
+			themes: {
+				light: 'github-light',
+				dark: 'github-dark',
 			},
+			defaultColor: false,
 		},
-	],
+	},
 });

@@ -1,0 +1,43 @@
+---
+import type { CollectionEntry } from 'astro:content';
+
+interface Props {
+	posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+const links = posts.map((post) => `/blog/${post.id}/`);
+---
+
+<div class="home-actions">
+	<a class="tile" href="/blog/" data-random data-hrefs={JSON.stringify(links)}>
+		<span class="tile-label">随便翻翻</span>
+		<span class="tile-hint" aria-hidden="true">↘</span>
+	</a>
+	<a class="tile" href="/about/">
+		<span class="tile-label">关于 Orivane</span>
+		<span class="tile-hint" aria-hidden="true">→</span>
+	</a>
+</div>
+
+<script>
+	for (const tile of document.querySelectorAll<HTMLElement>('[data-random]')) {
+		tile.addEventListener('click', (event) => {
+			const raw = tile.dataset.hrefs;
+			if (!raw) return;
+
+			let links: unknown;
+			try {
+				links = JSON.parse(raw);
+			} catch {
+				return;
+			}
+
+			if (!Array.isArray(links) || links.length === 0) return;
+
+			event.preventDefault();
+			const target = links[Math.floor(Math.random() * links.length)];
+			if (typeof target === 'string') window.location.href = target;
+		});
+	}
+</script>

@@ -1,0 +1,22 @@
+---
+/**
+ * 手写签名。
+ * 用 --font-script 里的连笔字，再用 clip-path 从右往左"揭开"，
+ * steps() 让步进感像笔尖在走。
+ *
+ * loop 为 true 时进入循环：写完停一会儿 → 从左往右擦掉 → 空一会儿 → 再写。
+ * 默认只播一次；prefers-reduced-motion 下两者都直接显示成品。
+ */
+interface Props {
+	text?: string;
+	size?: 'sm' | 'md' | 'lg' | 'xl';
+	loop?: boolean;
+	class?: string;
+}
+
+const { text = 'Orivane', size = 'md', loop = false, class: className } = Astro.props;
+---
+
+<span class:list={['signature', `signature-${size}`, { 'is-loop': loop }, className]} aria-hidden="true">
+	{text}
+</span>

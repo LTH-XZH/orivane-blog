@@ -1,0 +1,136 @@
+---
+/**
+ * 评论区。
+ * 三种实现共用一个组件，改 src/consts.ts 里的 COMMENT_PROVIDER 就能切换：
+ *   giscus  —— GitHub Discussions，免后端，但访客要登录 GitHub
+ *   twikoo  —— 昵称 + 内容，匿名（需要自己部署一个小后端）
+ *   waline  —— 昵称 + 内容，匿名（需要自己部署一个小后端）
+ */
+import { COMMENT_PROVIDER, GISCUS, TWIKOO, WALINE } from '../consts';
+
+const provider = COMMENT_PROVIDER;
+
+const configured =
+	(provider === 'giscus' && Boolean(GISCUS.repo && GISCUS.repoId && GISCUS.categoryId)) ||
+	(provider === 'twikoo' && Boolean(TWIKOO.envId)) ||
+	(provider === 'waline' && Boolean(WALINE.serverURL));
+---
+
+<section class="comments" aria-labelledby="comments-title">
+	<div class="section-head">
+		<h2 id="comments-title">评论</h2>
+		{
+			provider === 'giscus' && GISCUS.repo && (
+				<a href={`https://github.com/${GISCUS.repo}/discussions`} target="_blank" rel="noreferrer">
+					Giscus ↗
+				</a>
+			)
+		}
+	</div>
+
+	{
+		provider !== 'none' && configured ? (
+			<div
+				class="comments-slot"
+				data-comments
+				data-provider={provider}
+				data-giscus-repo={GISCUS.repo}
+				data-giscus-repo-id={GISCUS.repoId}
+				data-giscus-category={GISCUS.category}
+				data-giscus-category-id={GISCUS.categoryId}
+				data-twikoo-env={TWIKOO.envId}
+				data-waline-server={WALINE.serverURL}
+			/>
+		) : provider === 'none' ? (
+			<p class="comments-setup">评论区已关闭。</p>
+		) : (
+			<p class="comments-setup">
+				评论还没配好。到 <code>src/consts.ts</code> 里填 <code>{provider.toUpperCase()}</code> 的配置，
+				步骤见 <code>docs/deploy.md</code> 第 7、8 节。
+			</p>
+		)
+	}
+</section>
+
+<script>
+	const host = document.querySelector<HTMLElement>('[data-comments]');
+	const dark = () => document.documentElement.dataset.theme === 'dark';
+
+	const loadScript = (src: string) =>
+		new Promise<void>((resolve, reject) => {
+			const script = document.createElement('script');
+			script.src = src;
+			script.async = true;
+			script.onload = () => resolve();
+			script.onerror = () => reject(new Error(`failed: ${src}`));
+			document.head.appendChild(script);
+		});
+
+	if (host) {
+		const provider = host.dataset.provider;
+
+		if (provider === 'giscus') {
+			const script = document.createElement('script');
+			script.src = 'https://giscus.app/client.js';
+			script.async = true;
+			script.crossOrigin = 'anonymous';
+			script.setAttribute('data-repo', host.dataset.giscusRepo ?? '');
+			script.setAttribute('data-repo-id', host.dataset.giscusRepoId ?? '');
+			script.setAttribute('data-category', host.dataset.giscusCategory ?? '');
+			script.setAttribute('data-category-id', host.dataset.giscusCategoryId ?? '');
+			script.setAttribute('data-mapping', 'pathname');
+			script.setAttribute('data-strict', '0');
+			script.setAttribute('data-reactions-enabled', '1');
+			script.setAttribute('data-emit-metadata', '0');
+			script.setAttribute('data-input-position', 'top');
+			script.setAttribute('data-theme', dark() ? 'dark_dimmed' : 'light');
+			script.setAttribute('data-lang', 'zh-CN');
+			script.setAttribute('data-loading', 'lazy');
+			host.appendChild(script);
+
+			new MutationObserver(() => {
+				const frame = document.querySelector<HTMLIFrameElement>('iframe.giscus-frame');
+				frame?.contentWindow?.postMessage(
+					{ giscus: { setConfig: { theme: dark() ? 'dark_dimmed' : 'light' } } },
+					'https://giscus.app',
+				);
+			}).observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+		}
+
+		if (provider === 'twikoo') {
+			loadScript('https://cdn.jsdelivr.net/npm/twikoo@1.6.39/dist/twikoo.min.js')
+				.then(() => {
+					const twikoo = (window as unknown as { twikoo?: { init: (o: unknown) => void } }).twikoo;
+					twikoo?.init({
+						envId: host.dataset.twikooEnv,
+						el: host,
+						lang: 'zh-CN',
+						path: window.location.pathname,
+					});
+				})
+				.catch(() => {
+					host.textContent = '评论加载失败，稍后再试。';
+				});
+		}
+
+		if (provider === 'waline') {
+			loadScript('https://cdn.jsdelivr.net/npm/@waline/client@3/dist/waline.js')
+				.then(() => {
+					const waline = (
+						window as unknown as { Waline?: { init: (o: unknown) => void } }
+					).Waline;
+					waline?.init({
+						el: host,
+						serverURL: host.dataset.walineServer,
+						lang: 'zh-CN',
+						path: window.location.pathname,
+						dark: 'html[data-theme="dark"]',
+						login: 'disable',
+					});
+				})
+				.catch(() => {
+					host.textContent = '评论加载失败，稍后再试。';
+				});
+		}
+	}
+</script>

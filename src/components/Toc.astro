@@ -1,0 +1,87 @@
+---
+/**
+ * 文章目录。
+ * variant="side"   → 宽屏右侧 sticky
+ * variant="inline" → 窄屏折叠在正文上方
+ */
+interface Heading {
+	depth: number;
+	slug: string;
+	text: string;
+}
+
+interface Props {
+	headings: Heading[];
+	variant?: 'side' | 'inline';
+}
+
+const { headings, variant = 'side' } = Astro.props;
+const items = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+---
+
+{
+	items.length > 1 &&
+		(variant === 'side' ? (
+			<nav class="toc" aria-label="文章目录">
+				<p class="toc-title">目录</p>
+				<ol class="toc-list">
+					{items.map((heading) => (
+						<li class:list={['toc-item', `toc-depth-${heading.depth}`]}>
+							<a href={`#${heading.slug}`}>{heading.text}</a>
+						</li>
+					))}
+				</ol>
+			</nav>
+		) : (
+			<details class="toc-inline">
+				<summary>目录 · {items.length} 节</summary>
+				<ol class="toc-list">
+					{items.map((heading) => (
+						<li class:list={['toc-item', `toc-depth-${heading.depth}`]}>
+							<a href={`#${heading.slug}`}>{heading.text}</a>
+						</li>
+					))}
+				</ol>
+			</details>
+		))
+}
+
+<script>
+	const links = Array.from(document.querySelectorAll<HTMLAnchorElement>('.toc .toc-list a'));
+	if (links.length > 0) {
+		const targets = links
+			.map((link) => {
+				const id = decodeURIComponent(link.hash.slice(1));
+				const el = document.getElementById(id);
+				return el ? { link, el } : null;
+			})
+			.filter((item): item is { link: HTMLAnchorElement; el: HTMLElement } => item !== null);
+
+		let ticking = false;
+
+		const update = () => {
+			ticking = false;
+			const line = 110; // 距离视口顶部多少像素算"当前这一节"
+			let current: HTMLAnchorElement | null = null;
+
+			for (const { link, el } of targets) {
+				if (el.getBoundingClientRect().top <= line) current = link;
+			}
+
+			for (const { link } of targets) {
+				if (link === current) link.setAttribute('aria-current', 'true');
+				else link.removeAttribute('aria-current');
+			}
+		};
+
+		const onScroll = () => {
+			if (ticking) return;
+			ticking = true;
+			requestAnimationFrame(update);
+		};
+
+		window.addEventListener('scroll', onScroll, { passive: true });
+		window.addEventListener('resize', onScroll);
+		update();
+	}
+</script>

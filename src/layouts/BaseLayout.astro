@@ -1,0 +1,88 @@
+---
+import type { ImageMetadata } from 'astro';
+import BaseHead from '../components/BaseHead.astro';
+import Footer from '../components/Footer.astro';
+import Nav from '../components/Nav.astro';
+import { SITE_LOCALE } from '../consts';
+
+interface Props {
+	title?: string;
+	description?: string;
+	image?: ImageMetadata;
+	/** 页面上有数学公式时置 true：会额外加载 KaTeX */
+	math?: boolean;
+}
+
+const { title, description, image, math = false } = Astro.props;
+
+const KATEX = 'https://cdn.jsdelivr.net/npm/katex@0.16/dist';
+---
+
+<!doctype html>
+<html lang={SITE_LOCALE}>
+	<head>
+		<!-- 防闪白：必须在样式生效前把 data-theme 定下来，所以内联在 head 最前面 -->
+		<script is:inline>
+			(function () {
+				try {
+					var stored = localStorage.getItem('theme');
+					if (stored !== 'light' && stored !== 'dark') {
+						stored = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+					}
+					document.documentElement.dataset.theme = stored;
+				} catch (e) {
+					document.documentElement.dataset.theme = 'light';
+				}
+			})();
+		</script>
+		<BaseHead title={title} description={description} image={image} />
+		{math && <link rel="stylesheet" href={`${KATEX}/katex.min.css`} crossorigin="anonymous" />}
+	</head>
+	<body>
+		<a class="skip" href="#main">跳到正文</a>
+		<Nav />
+		<main id="main">
+			<div class="wrap">
+				<slot />
+			</div>
+		</main>
+		<Footer />
+
+		{
+			math && (
+				<script is:inline define:vars={{ KATEX }}>
+					(function () {
+						var load = function (src, done) {
+							var s = document.createElement('script');
+							s.src = src;
+							s.async = true;
+							s.onload = done;
+							s.onerror = function () {
+								/* CDN 挂了就把源码原样留着，别把页面搞坏 */
+							};
+							document.head.appendChild(s);
+						};
+
+						load(KATEX + '/katex.min.js', function () {
+							load(KATEX + '/contrib/auto-render.min.js', function () {
+								var root = document.querySelector('.prose');
+								if (!root || typeof window.renderMathInElement !== 'function') return;
+
+								window.renderMathInElement(root, {
+									delimiters: [
+										{ left: '$$', right: '$$', display: true },
+										{ left: '$', right: '$', display: false },
+										{ left: '\\[', right: '\\]', display: true },
+										{ left: '\\(', right: '\\)', display: false },
+									],
+									throwOnError: false,
+									ignoredTags: ['script', 'noscript', 'style', 'textarea', 'pre', 'code'],
+								});
+							});
+						});
+					})();
+				</script>
+			)
+		}
+	</body>
+</html>

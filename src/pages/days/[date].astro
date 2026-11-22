@@ -1,0 +1,41 @@
+---
+import PostList from '../../components/PostList.astro';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import { groupPostsByDate } from '../../utils/activity';
+import { getPublishedPosts } from '../../utils/posts';
+
+export async function getStaticPaths() {
+	const posts = await getPublishedPosts();
+	const byDate = groupPostsByDate(posts);
+
+	return [...byDate.entries()]
+		.filter(([, dayPosts]) => dayPosts.length > 1)
+		.map(([date, dayPosts]) => ({
+			params: { date },
+			props: { date, posts: dayPosts },
+		}));
+}
+
+interface Props {
+	date: string;
+	posts: Awaited<ReturnType<typeof getPublishedPosts>>;
+}
+
+const { date, posts } = Astro.props;
+const display = date.replaceAll('-', '.');
+---
+
+<BaseLayout title={`${display} 的更新`} description={`${display} 这一天发布的全部文章。`}>
+	<section class="hero">
+		<p class="kicker">某一天 · {posts.length} 篇</p>
+		<h1>{display}</h1>
+	</section>
+
+	<section class="list-section" aria-labelledby="day-title">
+		<div class="section-head">
+			<h2 id="day-title">这一天的更新</h2>
+			<a href="/blog/">全部文章 →</a>
+		</div>
+		<PostList posts={posts} />
+	</section>
+</BaseLayout>

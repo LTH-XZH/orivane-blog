@@ -1,0 +1,400 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Orivane — 设计样张（编辑体 / 中文长文优先）</title>
+<meta name="description" content="个人博客视觉方向样张：编辑式排版，为中文长文优化。">
+<style>
+  :root{
+    --bg:#fbf9f6;
+    --surface:#f4f0e9;
+    --fg:#1b1917;
+    --muted:#6f6862;
+    --line:#e3ddd2;
+    --accent:#a8442a;
+    --accent-soft:#f0e0d8;
+
+    --measure:36em;
+    --wrap:68rem;
+
+    --font-sans:ui-sans-serif,system-ui,-apple-system,"Segoe UI","Microsoft YaHei UI","PingFang SC","Noto Sans SC",sans-serif;
+    --font-serif:"Songti SC","Noto Serif SC","Source Han Serif SC",SimSun,Georgia,serif;
+    --font-mono:ui-monospace,"Cascadia Code","SFMono-Regular",Consolas,monospace;
+
+    --step-1:1.0625rem;
+    --step-2:1.25rem;
+    --step-3:1.45rem;
+    --step-4:clamp(2rem,5vw,2.9rem);
+  }
+  html[data-theme="dark"]{
+    --bg:#141312;
+    --surface:#1c1a18;
+    --fg:#e9e4db;
+    --muted:#9a938a;
+    --line:#2a2724;
+    --accent:#e08163;
+    --accent-soft:#2a1f1a;
+  }
+
+  *,*::before,*::after{box-sizing:border-box}
+  html{-webkit-text-size-adjust:100%}
+  body{
+    margin:0;
+    background:var(--bg);
+    color:var(--fg);
+    font-family:var(--font-sans);
+    font-size:var(--step-1);
+    line-height:1.85;
+    letter-spacing:.01em;
+    -webkit-font-smoothing:antialiased;
+    text-rendering:optimizeLegibility;
+  }
+  @media (prefers-reduced-motion:no-preference){
+    html{scroll-behavior:smooth}
+  }
+  ::selection{background:var(--accent-soft);color:var(--fg)}
+
+  a{
+    color:inherit;
+    text-decoration:underline;
+    text-decoration-color:color-mix(in srgb,var(--accent) 40%,transparent);
+    text-decoration-thickness:1px;
+    text-underline-offset:.22em;
+    transition:color .15s ease,text-decoration-color .15s ease;
+  }
+  a:hover{color:var(--accent);text-decoration-color:var(--accent)}
+  :focus-visible{outline:2px solid var(--accent);outline-offset:3px;border-radius:2px}
+
+  .wrap{max-width:var(--wrap);margin-inline:auto;padding-inline:clamp(1.25rem,4vw,2rem)}
+  .skip{
+    position:absolute;left:.75rem;top:.75rem;z-index:99;
+    padding:.5rem .9rem;background:var(--fg);color:var(--bg);
+    font-size:.8rem;text-decoration:none;border-radius:2px;
+    transform:translateY(-200%);
+  }
+  .skip:focus{transform:none}
+
+  /* ---------- 导航 ---------- */
+  .site{
+    position:sticky;top:0;z-index:10;
+    background:color-mix(in srgb,var(--bg) 86%,transparent);
+    backdrop-filter:saturate(1.4) blur(10px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav{display:flex;align-items:center;justify-content:space-between;height:4rem;gap:1rem}
+  .brand{
+    font-size:.82rem;font-weight:600;letter-spacing:.18em;text-transform:uppercase;
+    text-decoration:none;color:var(--fg);white-space:nowrap;
+  }
+  .brand span{color:var(--accent)}
+  .nav ul{display:flex;align-items:center;gap:1.5rem;list-style:none;margin:0;padding:0}
+  .nav ul a{font-size:.85rem;text-decoration:none;color:var(--muted);letter-spacing:.03em}
+  .nav ul a:hover,.nav ul a[aria-current]{color:var(--fg)}
+  .nav ul a[aria-current]{text-decoration:underline;text-underline-offset:.35em;text-decoration-color:var(--accent)}
+  .toggle{
+    display:grid;place-items:center;width:2rem;height:2rem;
+    background:none;border:1px solid var(--line);border-radius:2px;
+    color:var(--muted);cursor:pointer;font-size:.9rem;line-height:1;
+  }
+  .toggle:hover{color:var(--accent);border-color:var(--accent)}
+
+  /* ---------- 首屏 ---------- */
+  .hero{padding:clamp(4rem,10vw,7rem) 0 clamp(2.5rem,6vw,4rem)}
+  .kicker{
+    margin:0 0 1.4rem;
+    font-family:var(--font-mono);
+    font-size:.7rem;letter-spacing:.22em;text-transform:uppercase;color:var(--muted);
+  }
+  h1{
+    margin:0;
+    font-size:var(--step-4);
+    font-weight:600;
+    line-height:1.25;
+    letter-spacing:-.02em;
+    text-wrap:balance;
+    max-width:20ch;
+  }
+  .lead{
+    margin:1.6rem 0 0;
+    max-width:var(--measure);
+    color:var(--muted);
+  }
+  .lead em{font-style:normal;color:var(--fg);box-shadow:inset 0 -0.42em 0 var(--accent-soft)}
+
+  /* ---------- 文章列表 ---------- */
+  .section-head{
+    display:flex;align-items:baseline;justify-content:space-between;gap:1rem;
+    padding-bottom:.9rem;border-bottom:1px solid var(--fg);
+  }
+  .section-head h2{margin:0;font-size:.78rem;font-weight:600;letter-spacing:.16em;text-transform:uppercase}
+  .section-head a{font-family:var(--font-mono);font-size:.7rem;text-decoration:none;color:var(--muted);letter-spacing:.1em}
+  .section-head a:hover{color:var(--accent)}
+
+  .posts{list-style:none;margin:0;padding:0}
+  .posts li{
+    display:grid;
+    grid-template-columns:3.25rem 1fr auto;
+    gap:1.5rem;
+    align-items:baseline;
+    padding:1.7rem 0;
+    border-bottom:1px solid var(--line);
+  }
+  .idx{
+    font-family:var(--font-mono);font-size:.72rem;color:var(--muted);
+    font-variant-numeric:tabular-nums;letter-spacing:.06em;padding-top:.35em;
+  }
+  .posts h3{margin:0;font-size:var(--step-2);font-weight:600;letter-spacing:-.005em;line-height:1.45}
+  .posts h3 a{
+    text-decoration:none;
+    background-image:linear-gradient(var(--accent),var(--accent));
+    background-size:0 1px;background-repeat:no-repeat;background-position:0 100%;
+    transition:background-size .25s ease;
+  }
+  .posts h3 a:hover{background-size:100% 1px}
+  .posts p{margin:.45rem 0 0;color:var(--muted);font-size:.95rem;line-height:1.7;max-width:44ch}
+  .posts time{
+    font-family:var(--font-mono);font-size:.72rem;color:var(--muted);
+    font-variant-numeric:tabular-nums;white-space:nowrap;letter-spacing:.04em;
+  }
+
+  /* ---------- 文章页 ---------- */
+  .post{border-top:1px solid var(--fg);padding-top:clamp(3rem,7vw,5rem)}
+  .post-header{max-width:var(--measure);margin-bottom:2.5rem}
+  .post-meta{
+    display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1rem;
+    font-family:var(--font-mono);font-size:.72rem;color:var(--muted);letter-spacing:.08em;
+  }
+  .tags{display:flex;flex-wrap:wrap;gap:.4rem;list-style:none;margin:0;padding:0}
+  .tags li{
+    padding:.1rem .5rem;border:1px solid var(--line);border-radius:2px;
+    font-size:.68rem;letter-spacing:.08em;color:var(--muted);text-transform:uppercase;
+  }
+  .post-header h2{
+    margin:1.1rem 0 0;font-size:clamp(1.7rem,4vw,2.3rem);
+    font-weight:600;line-height:1.32;letter-spacing:-.02em;text-wrap:balance;
+  }
+  .post-header .sub{margin:.9rem 0 0;color:var(--muted);font-size:.98rem}
+
+  .prose{max-width:var(--measure)}
+  .prose p{margin:0 0 1.15em;text-wrap:pretty}
+  .prose h3{
+    margin:2.8rem 0 1rem;font-size:var(--step-3);font-weight:600;
+    line-height:1.45;letter-spacing:-.01em;
+  }
+  .prose h3::before{
+    content:"";display:block;width:2.25rem;height:2px;background:var(--accent);
+    margin-bottom:.85rem;
+  }
+  .prose blockquote{
+    margin:2.2rem 0;padding:.2rem 0 .2rem 1.5rem;
+    border-left:2px solid var(--accent);
+    font-family:var(--font-serif);font-size:1.3rem;line-height:1.9;color:var(--fg);
+  }
+  .prose blockquote p{margin:0}
+  .prose blockquote cite{
+    display:block;margin-top:.7rem;font-family:var(--font-sans);
+    font-style:normal;font-size:.78rem;color:var(--muted);letter-spacing:.06em;
+  }
+  .prose code{
+    font-family:var(--font-mono);font-size:.86em;
+    background:var(--surface);border:1px solid var(--line);border-radius:3px;
+    padding:.12em .38em;
+  }
+  .prose pre{
+    margin:1.8rem 0;padding:1.1rem 1.25rem;overflow-x:auto;
+    background:var(--surface);border:1px solid var(--line);border-radius:6px;
+  }
+  .prose pre code{background:none;border:0;padding:0;font-size:.82rem;line-height:1.75}
+  .prose ul,.prose ol{padding-left:1.4rem;margin:0 0 1.2em}
+  .prose li{margin:.35em 0}
+  .prose table{
+    width:100%;margin:1.8rem 0;border-collapse:collapse;
+    font-size:.9rem;line-height:1.65;font-variant-numeric:tabular-nums;
+  }
+  .prose th{text-align:left;font-weight:600;padding:.55em .7em;border-bottom:1px solid var(--fg)}
+  .prose td{padding:.55em .7em;border-bottom:1px solid var(--line)}
+  .prose hr{border:0;border-top:1px solid var(--line);margin:3rem 0}
+  .prose .note{
+    margin-top:2.5rem;padding-top:1.2rem;border-top:1px dashed var(--line);
+    font-size:.82rem;color:var(--muted);
+  }
+
+  /* ---------- 页脚 ---------- */
+  .site-foot{
+    margin-top:clamp(4rem,10vw,7rem);
+    padding:1.6rem 0 3rem;
+    border-top:1px solid var(--line);
+    display:flex;flex-wrap:wrap;gap:.6rem 1.5rem;justify-content:space-between;
+    font-family:var(--font-mono);font-size:.7rem;letter-spacing:.06em;color:var(--muted);
+  }
+  .site-foot a{text-decoration:none}
+  .site-foot a:hover{color:var(--accent);text-decoration:underline}
+
+  @media (max-width:640px){
+    :root{--step-1:1rem}
+    .nav ul{gap:1.1rem}
+    .nav ul li.hide-sm{display:none}
+    .posts li{grid-template-columns:2.4rem 1fr;gap:.6rem 1rem;padding:1.4rem 0}
+    .posts time{grid-column:2;margin-top:.5rem}
+    .prose blockquote{font-size:1.15rem}
+  }
+  @media (prefers-reduced-motion:reduce){
+    *,*::before,*::after{transition:none!important;animation:none!important}
+  }
+</style>
+<script>
+  (function(){
+    try{
+      var s = localStorage.getItem('theme');
+      var d = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = s || (d ? 'dark' : 'light');
+    }catch(e){ document.documentElement.dataset.theme = 'light'; }
+  })();
+</script>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+
+<header class="site">
+  <div class="wrap nav">
+    <a class="brand" href="#">Orivane<span>.</span></a>
+    <nav aria-label="主导航">
+      <ul>
+        <li><a href="#main" aria-current="page">文章</a></li>
+        <li class="hide-sm"><a href="#">关于</a></li>
+        <li class="hide-sm"><a href="#">RSS</a></li>
+        <li><button class="toggle" id="theme-toggle" type="button" aria-label="切换深浅色" title="切换深浅色">◐</button></li>
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+  <div class="wrap">
+
+    <section class="hero">
+      <p class="kicker">个人博客 · 自 2026</p>
+      <h1>把复杂的东西，写得让人愿意读完。</h1>
+      <p class="lead">关于工程、阅读与生活的一些长文。不定期更新，<em>不追热点</em>。</p>
+    </section>
+
+    <section aria-labelledby="list-title" style="padding-bottom:1rem">
+      <div class="section-head">
+        <h2 id="list-title">全部文章</h2>
+        <a href="#">RSS ↗</a>
+      </div>
+      <ol class="posts">
+        <li>
+          <span class="idx" aria-hidden="true">01</span>
+          <div>
+            <h3><a href="#">从零搭一个愿意长期维护的博客</a></h3>
+            <p>选型、成本，以及那些一年后才会后悔的决定。</p>
+          </div>
+          <time datetime="2026-11-21">2026.11.21</time>
+        </li>
+        <li>
+          <span class="idx" aria-hidden="true">02</span>
+          <div>
+            <h3><a href="#">中文网页排版笔记</a></h3>
+            <p>行宽、行高、字重：阅读体验其实只有三个旋钮。</p>
+          </div>
+          <time datetime="2026-10-08">2026.10.08</time>
+        </li>
+        <li>
+          <span class="idx" aria-hidden="true">03</span>
+          <div>
+            <h3><a href="#">为什么我放弃了成品主题</a></h3>
+            <p>别人的审美，装不下自己的内容——但也别高估自己。</p>
+          </div>
+          <time datetime="2026-09-12">2026.09.12</time>
+        </li>
+        <li>
+          <span class="idx" aria-hidden="true">04</span>
+          <div>
+            <h3><a href="#">重读《文学回忆录》</a></h3>
+            <p>关于「把话说完」这件事，木心比大多数技术写作更懂。</p>
+          </div>
+          <time datetime="2026-08-30">2026.08.30</time>
+        </li>
+      </ol>
+    </section>
+
+    <article class="post" aria-labelledby="post-title">
+      <header class="post-header">
+        <div class="post-meta">
+          <time datetime="2026-10-08">2026.10.08</time>
+          <span>·</span>
+          <span>8 分钟</span>
+          <ul class="tags"><li>排版</li><li>CSS</li><li>中文</li></ul>
+        </div>
+        <h2 id="post-title">中文网页排版笔记</h2>
+        <p class="sub">大多数「不好读」的中文网页，问题不在审美，在三个数字。</p>
+      </header>
+
+      <div class="prose">
+        <p>中文和英文的排版，并不是同一套参数换一个字号。英文靠单词之间的空格切分节奏，中文是一块一块的方块字，一旦行宽、行高、字重没调好，整页就会呈现出一种「糊」的感觉——字都认识，但读三行就想划走。</p>
+
+        <h3>行宽决定一切</h3>
+        <p>西文排版里有个经验值：每行 45–75 个字符。中文没有空格，换算过来大约是 <strong>30–40 个汉字</strong>。对应到 17px 的字号，就是 600px 上下的正文宽度。超过这个数，眼睛回到行首时容易串行；低于 25 字，换行太频繁，节奏被切碎。</p>
+        <p>所以正文容器写 <code>max-width: 36em</code> 就够了，不要让它跟着屏幕一起撑满。</p>
+
+        <blockquote>
+          <p>排版不是装饰，是让读者忘记排版。</p>
+          <cite>—— 某个深夜改 CSS 的人</cite>
+        </blockquote>
+
+        <h3>行高与段距</h3>
+        <p>中文的「字面率」比英文高，同样的行高在中文里显得更挤。正文行高给到 <code>1.8</code> 到 <code>1.9</code> 之间，段间距一个字高左右，阅读节奏就顺了。</p>
+        <p>还有一条常被忽略：<strong>网页不要首行缩进</strong>。缩进是纸质书为了节省纸张形成的习惯，屏幕上有段间距做分隔，再缩进只会多出一个视觉缺口。</p>
+
+        <pre><code>:root {
+  --measure: 36em;   /* 约 36 个汉字 */
+  --leading: 1.85;
+  --step: 17px;
+}
+
+.prose p {
+  margin-block: 0 1.1em;
+  text-wrap: pretty;  /* 避免末行孤字 */
+}</code></pre>
+
+        <h3>三个数字的对照</h3>
+        <table>
+          <thead>
+            <tr><th>参数</th><th>建议值</th><th>失衡后的症状</th></tr>
+          </thead>
+          <tbody>
+            <tr><td>行宽</td><td>30–40 汉字</td><td>串行、读不下去</td></tr>
+            <tr><td>行高</td><td>1.8–1.9</td><td>闷、糊成一团</td></tr>
+            <tr><td>字重</td><td>400 正文 / 600 标题</td><td>层次消失，全靠加粗救</td></tr>
+          </tbody>
+        </table>
+
+        <p>剩下的都是细节：数字用等宽对齐、西文与中文之间留一点空隙、链接下划线不要贴字、代码块别用纯黑背景。<strong>这些加起来，才叫「读起来舒服」。</strong></p>
+
+        <p class="note">本文是视觉样张的一部分，用来检验长文在亮/暗两套配色下的表现。点击右上角 ◐ 可以切换。</p>
+      </div>
+    </article>
+
+    <footer class="site-foot">
+      <span>© 2026 Orivane · 用 Astro 构建</span>
+      <span><a href="#">RSS</a> · <a href="#">GitHub</a> · <a href="#">关于</a></span>
+    </footer>
+
+  </div>
+</main>
+
+<script>
+  (function(){
+    var btn = document.getElementById('theme-toggle');
+    if(!btn) return;
+    btn.addEventListener('click', function(){
+      var next = document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark';
+      document.documentElement.dataset.theme = next;
+      try{ localStorage.setItem('theme', next); }catch(e){}
+    });
+  })();
+</script>
+</body>
+</html>

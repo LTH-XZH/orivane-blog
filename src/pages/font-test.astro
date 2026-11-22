@@ -1,0 +1,257 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+
+const SAMPLE_TITLE = '把复杂的东西，写得让人愿意读完';
+const SAMPLE_BODY =
+	'中文和英文的排版，并不是同一套参数换一个字号。英文靠单词之间的空格切分节奏，中文是一块一块的方块字。';
+
+const fonts = [
+	{
+		name: '等线加粗',
+		family: '"DengXian", "等线"',
+		weight: 700,
+		kind: '当前使用 · Windows 自带',
+		check: 'DengXian',
+		link: null,
+	},
+	{
+		name: '思源黑体',
+		family: '"Noto Sans SC", "Source Han Sans SC"',
+		weight: 400,
+		kind: '开源 · SIL OFL',
+		check: 'Noto Sans SC',
+		link: 'https://github.com/notofonts/noto-cjk',
+	},
+	{
+		name: '思源宋体',
+		family: '"Noto Serif SC", "Source Han Serif SC"',
+		weight: 400,
+		kind: '开源 · SIL OFL',
+		check: 'Noto Serif SC',
+		link: 'https://github.com/notofonts/noto-cjk',
+	},
+	{
+		name: '霞鹜文楷',
+		family: '"LXGW WenKai", "霞鹜文楷"',
+		weight: 400,
+		kind: '开源 · 楷体',
+		check: 'LXGW WenKai',
+		link: 'https://github.com/lxgw/LxgwWenKai/releases',
+	},
+	{
+		name: 'MiSans',
+		family: '"MiSans", "MiSans VF"',
+		weight: 400,
+		kind: '小米 · 免费商用',
+		check: 'MiSans',
+		link: 'https://hyperos.mi.com/font/zh/',
+	},
+	{
+		name: 'HarmonyOS Sans',
+		family: '"HarmonyOS Sans SC", "HarmonyOS Sans"',
+		weight: 400,
+		kind: '华为 · 免费商用',
+		check: 'HarmonyOS Sans SC',
+		link: 'https://developer.huawei.com/consumer/cn/design/resource',
+	},
+	{
+		name: '阿里巴巴普惠体',
+		family: '"Alibaba PuHuiTi 3.0", "Alibaba PuHuiTi", "AlibabaPuHuiTi-3-55-Regular"',
+		weight: 400,
+		kind: '阿里 · 免费商用',
+		check: 'Alibaba PuHuiTi 3.0',
+		link: 'https://fonts.alibabagroup.com/',
+	},
+	{
+		name: '得意黑',
+		family: '"Smiley Sans", "SmileySans-Oblique"',
+		weight: 400,
+		kind: '开源 · 斜体展示字',
+		check: 'Smiley Sans',
+		link: 'https://github.com/atelier-anchor/smiley-sans/releases',
+	},
+];
+---
+
+<BaseLayout title="字体预览" description="开源中文字体对照，临时页。">
+	<!-- 只为这张预览页临时从 CDN 拉字体，正式站点不加载 -->
+	<style is:inline>
+		@import url("https://cdn.jsdelivr.net/npm/lxgw-wenkai-webfont/style.css");
+		@import url("https://cdn.jsdelivr.net/npm/@fontsource/noto-sans-sc/index.css");
+		@import url("https://cdn.jsdelivr.net/npm/@fontsource/noto-serif-sc/index.css");
+		@import url("https://chinese-fonts-cdn.deno.dev/packages/misans/dist/MiSans-Regular/result.css");
+		@import url("https://chinese-fonts-cdn.deno.dev/packages/harmony-os-sans/dist/HarmonyOS_Sans_SC/result.css");
+		@import url("https://chinese-fonts-cdn.deno.dev/packages/alibaba-puhuiti/dist/AlibabaPuHuiTi-3-55-Regular/result.css");
+		@import url("https://chinese-fonts-cdn.deno.dev/packages/smiley-sans/dist/SmileySans-Oblique/result.css");
+	</style>
+
+	<article class="post">
+		<header class="post-header">
+			<p class="kicker">临时页面 · 看完可以删</p>
+			<h1>字体预览</h1>
+			<p class="sub">
+				同一段中文，八种字体。右上角的徽标是实时检测结果：✓ 表示字体真的加载了，✗ 表示没拉到（需要本机安装）。
+			</p>
+		</header>
+
+		<div class="specimens">
+			{
+				fonts.map((font) => (
+					<section class="specimen" data-check={font.check}>
+						<header class="specimen-head">
+							<h2 class="specimen-name">{font.name}</h2>
+							<span class="badge" data-badge>检测中…</span>
+						</header>
+						<p
+							class="specimen-title"
+							style={`font-family: ${font.family}, var(--font-sans); font-weight: ${font.weight};`}
+						>
+							{SAMPLE_TITLE}
+						</p>
+						<p
+							class="specimen-body"
+							style={`font-family: ${font.family}, var(--font-sans); font-weight: ${font.weight};`}
+						>
+							{SAMPLE_BODY}
+						</p>
+						<footer class="specimen-foot">
+							<span>{font.kind}</span>
+							{font.link && <a href={font.link} target="_blank" rel="noreferrer">下载 ↗</a>}
+						</footer>
+					</section>
+				))
+			}
+		</div>
+
+		<div class="prose">
+			<h2>怎么读这张页</h2>
+			<p>
+				字体是浏览这张页面时临时从 CDN 拉的，只在这张页面生效，其他页面不受影响。CDN 在国内时通时不通，
+				所以每个样本都带一个实时徽标——<strong>看到 ✗ 就说明字体没到位，那一栏显示的是回退字体</strong>，别照着它下结论。
+			</p>
+			<p>
+				想看清楚某个字体，点它右下角的“下载 ↗”，安装到系统后刷新本页，徽标就会变成 ✓。
+				装完之后，正式启用只需要把字体文件给我，我子集化到实际用到的字（100–300KB）再接进站点。
+			</p>
+			<p class="note">
+				得意黑是斜体展示字，只适合标题，正文别用。思源宋体和霞鹜文楷适合标题 + 引用，正文用楷体长读会累。
+			</p>
+		</div>
+	</article>
+</BaseLayout>
+
+<style>
+	.specimens {
+		display: grid;
+		gap: 2.2rem 2rem;
+		margin: 0 0 3rem;
+	}
+
+	@media (min-width: 1000px) {
+		.specimens {
+			grid-template-columns: repeat(2, minmax(0, 1fr));
+		}
+	}
+
+	@media (min-width: 1400px) {
+		.specimens {
+			grid-template-columns: repeat(3, minmax(0, 1fr));
+		}
+	}
+
+	.specimen {
+		padding-top: 0.9rem;
+		border-top: 1px solid var(--fg);
+	}
+
+	.specimen-head {
+		display: flex;
+		align-items: baseline;
+		justify-content: space-between;
+		gap: 0.6rem;
+		margin-bottom: 0.9rem;
+	}
+
+	.specimen-name {
+		margin: 0;
+		font-size: 0.95rem;
+		letter-spacing: 0;
+	}
+
+	.badge {
+		font-family: var(--font-mono);
+		font-size: 0.66rem;
+		letter-spacing: 0.04em;
+		color: var(--muted);
+		white-space: nowrap;
+	}
+
+	.badge[data-state='ok'] {
+		color: var(--accent);
+	}
+
+	.specimen-title {
+		margin: 0 0 0.7rem;
+		font-size: 1.45rem;
+		line-height: 1.5;
+	}
+
+	.specimen-body {
+		margin: 0;
+		font-size: 0.98rem;
+		line-height: 1.9;
+	}
+
+	.specimen-foot {
+		display: flex;
+		justify-content: space-between;
+		gap: 0.6rem;
+		margin-top: 0.9rem;
+		font-family: var(--font-mono);
+		font-size: 0.66rem;
+		letter-spacing: 0.04em;
+		color: var(--muted);
+	}
+
+	.specimen-foot a {
+		text-decoration: none;
+	}
+</style>
+
+<script>
+	const PROBE = '中文排版测试 Orivane 123 abc';
+
+	const isAvailable = (family: string): boolean => {
+		const canvas = document.createElement('canvas');
+		const ctx = canvas.getContext('2d');
+		if (!ctx) return false;
+
+		ctx.font = '32px monospace';
+		const base = ctx.measureText(PROBE).width;
+		ctx.font = `32px "${family}", monospace`;
+		return Math.abs(ctx.measureText(PROBE).width - base) > 0.5;
+	};
+
+	const run = () => {
+		for (const specimen of document.querySelectorAll<HTMLElement>('[data-check]')) {
+			const family = specimen.dataset.check ?? '';
+			const badge = specimen.querySelector<HTMLElement>('[data-badge]');
+			if (!badge) continue;
+
+			const ok = family ? isAvailable(family) : false;
+			badge.textContent = ok ? '✓ 已加载' : '✗ 未加载';
+			badge.dataset.state = ok ? 'ok' : 'missing';
+		}
+	};
+
+	const start = () => {
+		run();
+		window.setTimeout(run, 2500);
+	};
+
+	if (document.fonts?.ready) {
+		document.fonts.ready.then(start);
+	} else {
+		window.addEventListener('load', start);
+	}
+</script>

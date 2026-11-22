@@ -1,0 +1,32 @@
+---
+import { NAV_LINKS, SITE_TITLE } from '../consts';
+import ThemeToggle from './ThemeToggle.astro';
+
+const path = Astro.url.pathname;
+
+function isCurrent(href: string): boolean {
+	if (href === '/') return path === '/';
+	if (href.endsWith('.xml')) return path === href;
+	return path === href || path === href.replace(/\/$/, '') || path.startsWith(href);
+}
+---
+
+<header class="site-head">
+	<div class="wrap nav">
+		<a class="brand" href="/">{SITE_TITLE}<span>.</span></a>
+		<nav aria-label="主导航">
+			<ul class="nav-links">
+				{
+					NAV_LINKS.map((link) => (
+						<li class={link.hideOnMobile ? 'hide-sm' : undefined}>
+							<a href={link.href} aria-current={isCurrent(link.href) ? 'page' : undefined}>
+								{link.label}
+							</a>
+						</li>
+					))
+				}
+				<li><ThemeToggle /></li>
+			</ul>
+		</nav>
+	</div>
+</header>

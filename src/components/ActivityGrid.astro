@@ -1,0 +1,182 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import { buildActivity, groupPostsByDate } from '../utils/activity';
+
+interface Props {
+	posts: CollectionEntry<'blog'>[];
+	weeks?: number;
+}
+
+const { posts, weeks = 26 } = Astro.props;
+const days = buildActivity(posts, weeks);
+const activeDays = days.filter((day) => day.count > 0).length;
+
+const first = days[0]?.date.slice(0, 7).replace('-', '.') ?? '';
+const last = days[days.length - 1]?.date.slice(0, 7).replace('-', '.') ?? '';
+const display = (date: string) => date.replaceAll('-', '.');
+
+// 交给浏览器：如果页面放着没重新构建，打开时按"今天"把窗口往前滚
+const byDate = groupPostsByDate(posts);
+const payload = {
+	weeks,
+	builtOn: days[days.length - 1]?.date ?? '',
+	postDays: [...byDate.entries()].map(([date, list]) => ({
+		d: date,
+		ids: list.map((post) => post.id),
+	})),
+};
+---
+
+<div class="activity" data-activity>
+	<div class="activity-head">
+		<span class="label">最近活跃</span>
+		<span class="activity-meta" data-activity-meta>{first} — {last} · {activeDays} 天有更新</span>
+	</div>
+	<div
+		class="activity-grid"
+		data-generated={days[0]?.date}
+		aria-label={`最近 ${weeks} 周的写作记录，${activeDays} 天有更新`}
+	>
+		{
+			days.map((day) =>
+				day.href ? (
+					<a
+						class="cell is-on"
+						href={day.href}
+						data-date={display(day.date)}
+						data-count={day.count}
+						aria-label={`${display(day.date)}，${day.count} 篇更新`}
+					/>
+				) : (
+					<span
+						class="cell"
+						data-date={display(day.date)}
+						data-count="0"
+						aria-hidden="true"
+					/>
+				),
+			)
+		}
+	</div>
+	{
+		activeDays === 0 && (
+			<p class="activity-empty">还没有记录。写下第一篇之后，这些格子会亮起来。</p>
+		)
+	}
+	<p class="activity-tip" hidden></p>
+	<script type="application/json" data-activity-payload set:html={JSON.stringify(payload)} />
+</div>
+
+<script>
+	const TIP_OFFSET = 14;
+
+	/** 2026-11-22 这种 UTC 日期字符串 */
+	const isoDay = (value: number) => new Date(value).toISOString().slice(0, 10);
+
+	/** 如果页面是几天前构建的，按今天重画一次网格 */
+	const refresh = (box: HTMLElement) => {
+		const grid = box.querySelector<HTMLElement>('.activity-grid');
+		const meta = box.querySelector<HTMLElement>('[data-activity-meta]');
+		const raw = box.querySelector<HTMLScriptElement>('[data-activity-payload]')?.textContent;
+		if (!grid || !meta || !raw) return;
+
+		let payload: { weeks: number; builtOn: string; postDays: { d: string; ids: string[] }[] };
+		try {
+			payload = JSON.parse(raw);
+		} catch {
+			return;
+		}
+
+		const today = Date.now();
+		const todayIso = isoDay(today);
+
+		// 窗口终点 = 今天与"最新一篇文章"里更晚的那个（和构建时同一套规则）
+		const latestPost = payload.postDays.reduce((max, day) => (day.d > max ? day.d : max), '');
+		const endIso = latestPost > todayIso ? latestPost : todayIso;
+		if (endIso === payload.builtOn) return; // 构建当天且没有更新的文章，服务端画的就是对的
+
+		const map = new Map(payload.postDays.map((day) => [day.d, day.ids]));
+		const end = Date.parse(`${endIso}T00:00:00Z`);
+
+		const dayOfWeek = (new Date(end).getUTCDay() + 6) % 7;
+		const daysBack = dayOfWeek + (payload.weeks - 1) * 7;
+
+		const fragment = document.createDocumentFragment();
+		let active = 0;
+		let firstDate = '';
+
+		for (let i = 0; i <= daysBack; i++) {
+			const iso = isoDay(end - (daysBack - i) * 86_400_000);
+			if (i === 0) firstDate = iso;
+
+			const ids = map.get(iso) ?? [];
+			const label = iso.replaceAll('-', '.');
+			if (ids.length > 0) active++;
+
+			if (ids.length === 1) {
+				const link = document.createElement('a');
+				link.className = 'cell is-on';
+				link.href = `/blog/${ids[0]}/`;
+				link.dataset.date = label;
+				link.dataset.count = '1';
+				link.setAttribute('aria-label', `${label}，1 篇更新`);
+				fragment.appendChild(link);
+			} else if (ids.length > 1) {
+				const link = document.createElement('a');
+				link.className = 'cell is-on';
+				link.href = `/days/${iso}/`;
+				link.dataset.date = label;
+				link.dataset.count = String(ids.length);
+				link.setAttribute('aria-label', `${label}，${ids.length} 篇更新`);
+				fragment.appendChild(link);
+			} else {
+				const cell = document.createElement('span');
+				cell.className = 'cell';
+				cell.dataset.date = label;
+				cell.dataset.count = '0';
+				cell.setAttribute('aria-hidden', 'true');
+				fragment.appendChild(cell);
+			}
+		}
+
+		grid.replaceChildren(fragment);
+		grid.dataset.generated = firstDate;
+
+		const first = firstDate.slice(0, 7).replace('-', '.');
+		const last = isoDay(end).slice(0, 7).replace('-', '.');
+		meta.textContent = `${first} — ${last} · ${active} 天有更新`;
+		grid.setAttribute('aria-label', `最近 ${payload.weeks} 周的写作记录，${active} 天有更新`);
+	};
+
+	for (const box of document.querySelectorAll<HTMLElement>('[data-activity]')) {
+		const grid = box.querySelector<HTMLElement>('.activity-grid');
+		const tip = box.querySelector<HTMLElement>('.activity-tip');
+		if (!grid || !tip) continue;
+
+		refresh(box);
+
+		const hide = () => {
+			tip.hidden = true;
+		};
+
+		grid.addEventListener('pointermove', (event) => {
+			const target = event.target as HTMLElement | null;
+			const cell = target?.closest<HTMLElement>('.cell');
+			if (!cell) {
+				hide();
+				return;
+			}
+
+			const count = Number(cell.dataset.count ?? '0');
+			const date = cell.dataset.date ?? '';
+			tip.textContent = count > 0 ? `${date} · ${count} 篇` : date;
+
+			const rect = box.getBoundingClientRect();
+			tip.hidden = false;
+			tip.style.left = `${event.clientX - rect.left}px`;
+			tip.style.top = `${event.clientY - rect.top - TIP_OFFSET}px`;
+		});
+
+		grid.addEventListener('pointerleave', hide);
+	}
+</script>

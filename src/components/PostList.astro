@@ -1,0 +1,34 @@
+---
+import type { CollectionEntry } from 'astro:content';
+import FormattedDate from './FormattedDate.astro';
+
+interface Props {
+	posts: CollectionEntry<'blog'>[];
+}
+
+const { posts } = Astro.props;
+const pad = (n: number) => String(n).padStart(2, '0');
+---
+
+{
+	posts.length === 0 ? (
+		<p class="posts-empty">还没有文章。</p>
+	) : (
+		<ol class="posts">
+			{posts.map((post, index) => (
+				<li>
+					<span class="idx" aria-hidden="true">
+						{pad(index + 1)}
+					</span>
+					<div class="post-body">
+						<h3>
+							<a href={`/blog/${post.id}/`}>{post.data.title}</a>
+						</h3>
+						{post.data.description && <p>{post.data.description}</p>}
+					</div>
+					<FormattedDate date={post.data.pubDate} />
+				</li>
+			))}
+		</ol>
+	)
+}
