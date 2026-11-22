@@ -30,18 +30,32 @@
 
 1. Cloudflare → **Workers & Pages** → **Create application**
 2. 选 **Connect GitHub**（不是 Upload your static files）→ 授权 → 选中刚才那个仓库
-3. 构建配置：
+3. 这一页只有四个字段（**没有** Framework preset / 输出目录，那是旧版 Pages 流程才有的）：
 
    | 项 | 值 |
    | :-- | :-- |
-   | Framework preset | **Astro** |
-   | Build command | `npm run build` |
-   | Build output directory | `dist` |
-   | 生产分支 | `main` |
+   | 项目名称 | `orivane-blog` |
+   | 构建命令 | `npm run build` |
+   | 部署命令 | `npx wrangler deploy` |
+   | 预览命令 | `npx wrangler preview` |
 
-4. 点 **Deploy**，等它跑完（第一次 1–3 分钟）。会给你一个新的 `xxx.workers.dev` 地址。
+   保持默认即可。静态文件在哪儿由仓库根目录的 **`wrangler.jsonc`** 说明：
 
-**如果构建报 Node 版本错误**：到项目 → Settings → Environment variables 加一条 `NODE_VERSION` = `22.23.4`（`package.json` 里写的是 `>=22.23.4`）。
+   ```jsonc
+   {
+   	"name": "orivane-blog",
+   	"compatibility_date": "2026-11-01",
+   	"assets": { "directory": "./dist", "not_found_handling": "404-page" }
+   }
+   ```
+
+4. 点 **部署**，等它跑完（第一次 1–3 分钟）。会给你一个新的 `xxx.workers.dev` 地址。
+
+> **别忘了先 `git push`。** Cloudflare 构建的是 GitHub 上的代码，本地改了没推上去，线上不会有任何变化。
+
+**如果构建报 Node 版本错误**：到项目 → Settings → 环境变量加一条 `NODE_VERSION` = `22.23.4`（`package.json` 里写的是 `>=22.23.4`）。
+
+**如果想用旧版 Pages 流程**（有 Framework preset 和输出目录那两个字段）：在创建页最下面点「Need to use the legacy Pages workflow? Continue to Pages」。效果一样，二选一即可。
 
 ---
 
