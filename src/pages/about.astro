@@ -18,33 +18,27 @@ import { CONTACT_EMAIL, GITHUB_HANDLE, GITHUB_URL } from "../consts";
 
 			<h2>关于我</h2>
 			<p>Orivane，一个平平无奇的大学生，在此处记录一些学习日常、灵感和思考。</p>
-			<p>日常喜欢阅读、听音乐、看电影，同时算是一个 ACG lover。</p>
-
-			<ul class="fact-list">
-				<li>
-					<span class="fact-key">坐标</span>
-					<span class="fact-value">中国 · 北京</span>
-				</li>
-				<li>
-					<span class="fact-key">正在</span>
-					<span class="fact-value">某高校 · 通信工程 · 本科在读</span>
-				</li>
-			</ul>
-
+			<p>日常喜爱阅读、听音乐、看电影而已, 同时算是一个ACG lover。</p>
+			<p class="fact-line">
+				<span>📍 中国·北京</span>
+				<span>正在某高校通信工程专业学习中</span>
+			</p>
 			<h2>关于这个站</h2>
 			<p>
-				用 <a href="https://astro.build/">Astro</a> 构建，纯静态站，没有后端和数据库。
-				排版按中文长文调过：正文 <code>36em</code> 宽、行高 <code>1.9</code>，全站只有一个强调色。
+				用 <a href="https://astro.build/">Astro</a> 构建，为纯静态站。{" "}
+				排版参数按中文长文调整：正文 <code>36em</code> 宽、行高{" "}
+				<code>1.85</code>， 全站只有一个强调色。
 			</p>
 
 			<h2>联系我</h2>
 			<p>
 				邮件：<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
-				<br />
-				GitHub：<a href={GITHUB_URL} target="_blank" rel="noreferrer">@{GITHUB_HANDLE}</a>
+				　·　 GitHub：
+				<a href={GITHUB_URL} target="_blank" rel="noreferrer">
+					@{GITHUB_HANDLE}
+				</a>
 			</p>
 		</div>
-
 		<p class="post-signature">
 			<Signature size="sm" />
 		</p>

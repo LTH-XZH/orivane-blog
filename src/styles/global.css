@@ -1255,35 +1255,33 @@ html[data-theme="dark"] .prose pre.astro-code span {
 	letter-spacing: 0.1em;
 }
 
-/* 关于页「坐标 / 正在」这类信息行：标签靠左、内容靠右，中间留白 */
-.fact-list {
-	display: grid;
-	gap: 0.5rem;
-	margin: 1.7rem 0 0;
-	padding: 1.1rem 0 0;
-	list-style: none;
-	border-top: 1px dashed var(--line);
-}
-
-.fact-list li {
+/* 关于页那一行「坐标 / 正在」：左右分开，内容右端对齐正文右边界 */
+.fact-line {
 	display: flex;
 	align-items: baseline;
 	justify-content: space-between;
 	gap: 1.5rem;
 }
 
-.fact-key {
-	flex: none;
-	font-family: var(--font-ui);
-	font-size: 0.8rem;
-	letter-spacing: 0.12em;
-	color: var(--muted);
+.fact-line span:last-child {
+	text-align: right;
 }
 
-.fact-value {
-	font-size: 0.98rem;
-	line-height: 1.7;
-	text-align: right;
+@media (max-width: 520px) {
+	/* 窄屏放不下就换行，别挤成两截 */
+	.fact-line {
+		display: block;
+	}
+
+	.fact-line span {
+		display: block;
+	}
+
+	.fact-line span:last-child {
+		text-align: left;
+		margin-top: 0.2rem;
+		color: var(--muted);
+	}
 }
 
 /* 10 响应式 / 动效 ------------------------------------------------------- */
