@@ -83,6 +83,11 @@ tags: ['Markdown', '写作']
   - 再一项
 ```
 
+- 第一项
+- 第二项
+  - 缩进两个空格就是子项
+  - 再一项
+
 有序列表：
 
 ```markdown
@@ -90,6 +95,10 @@ tags: ['Markdown', '写作']
 2. 第二步
 3. 第三步
 ```
+
+1. 第一步
+2. 第二步
+3. 第三步
 
 任务列表（GFM）：
 
@@ -101,7 +110,16 @@ tags: ['Markdown', '写作']
 - [x] 已经做完的
 - [ ] 还没做的
 
-列表项里面可以放多段话、代码块、引用，只要**再缩进四个空格**。
+列表项里面可以放多段话、代码块、引用，只要**再缩进四个空格**：
+
+- 一条需要展开说的列表项
+
+	第二段话要缩进四个空格，这样它仍然属于上面那一项，而不是变成新的一段。
+
+	```js
+	// 代码块同理
+	console.log('hello');
+	```
 
 ## 链接
 
@@ -113,17 +131,23 @@ tags: ['Markdown', '写作']
 [带标题的链接](https://example.com "鼠标悬停时显示")
 ```
 
+[显示的文字](https://example.com)、[站内文章](/blog/hello/)、[带标题的链接](https://example.com "鼠标悬停时显示")。鼠标悬停在最后一个上，能看到“鼠标悬停时显示”。
+
 自动链接（直接写网址，GFM 会自动转）：
 
 ```markdown
 https://orivane.me
 ```
 
+https://orivane.me
+
 锚点跳到本文某一节：把标题文字当作 id 用（中文标题也能用）。
 
 ```markdown
 [跳到表格那一节](#表格)
 ```
+
+[跳到表格那一节](#表格)
 
 参考式链接，适合同一地址用很多次：
 
@@ -132,6 +156,10 @@ https://orivane.me
 
 [astro]: https://docs.astro.build
 ```
+
+[Astro 文档][astro]
+
+[astro]: https://docs.astro.build
 
 ## 图片
 
@@ -149,14 +177,23 @@ https://orivane.me
 - 图标、PDF、zip → 放 `public/`，路径短
 - 文件名用英文加短横线，别用空格和中文
 
+渲染出来就是一张普通图片：
+
+![STM32 最小系统板](/images/stm32_minimal_system.png)
+
 想给图片加说明文字，用 `<figure>`：
 
 ```html
 <figure>
-	<img src="/images/stm32-board.png" alt="STM32 最小系统" />
+	<img src="/images/stm32_minimal_system.png" alt="STM32 最小系统" />
 	<figcaption>STM32 最小系统板</figcaption>
 </figure>
 ```
+
+<figure>
+	<img src="/images/stm32_minimal_system.png" alt="STM32 最小系统" />
+	<figcaption>STM32 最小系统板 · 说明文字会自动用等宽小字排在图片下方</figcaption>
+</figure>
 
 ## 引用
 
