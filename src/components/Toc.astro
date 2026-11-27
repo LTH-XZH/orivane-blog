@@ -16,7 +16,12 @@ interface Props {
 }
 
 const { headings, variant = 'side' } = Astro.props;
-const items = headings.filter((heading) => heading.depth === 2 || heading.depth === 3);
+
+// 脚注区那个 `sr-only` 的 "Footnotes" 标题是插件自动加的，别让它混进目录
+const items = headings.filter(
+	(heading) =>
+		(heading.depth === 2 || heading.depth === 3) && heading.slug !== 'footnote-label',
+);
 ---
 
 {
