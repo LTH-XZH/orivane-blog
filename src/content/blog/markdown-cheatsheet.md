@@ -6,9 +6,7 @@ category: '技术'
 tags: ['Markdown', '写作']
 ---
 
-写文章只用 Markdown。这篇是给自己留的速查表：左边怎么写、右边长什么样，忘了随时回来翻。
-
-想验证某个写法，直接复制到任意一篇草稿里，`npm run dev` 就能看到效果。
+本文为Markdown语法速查笔记，涵盖了常用的Markdown写作技巧和格式。包含写法与渲染效果方便学习Markdown和写博客。
 
 ## frontmatter
 
