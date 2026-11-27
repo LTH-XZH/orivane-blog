@@ -1255,6 +1255,36 @@ html[data-theme="dark"] .prose pre.astro-code span {
 	letter-spacing: 0.1em;
 }
 
+/* 关于页「坐标 / 正在」这类信息行：标签与内容对齐，两行右侧起齐 */
+.fact-list {
+	display: grid;
+	gap: 0.5rem;
+	max-width: 26rem;
+	margin: 1.7rem 0 0;
+	padding: 1.1rem 0 0;
+	list-style: none;
+	border-top: 1px dashed var(--line);
+}
+
+.fact-list li {
+	display: grid;
+	grid-template-columns: 3.6rem minmax(0, 1fr);
+	gap: 0.9rem;
+	align-items: baseline;
+}
+
+.fact-key {
+	font-family: var(--font-ui);
+	font-size: 0.8rem;
+	letter-spacing: 0.12em;
+	color: var(--muted);
+}
+
+.fact-value {
+	font-size: 0.98rem;
+	line-height: 1.7;
+}
+
 /* 10 响应式 / 动效 ------------------------------------------------------- */
 
 @media (max-width: 900px) {

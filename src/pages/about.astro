@@ -4,37 +4,47 @@ import Signature from "../components/Signature.astro";
 import { CONTACT_EMAIL, GITHUB_HANDLE, GITHUB_URL } from "../consts";
 ---
 
-<BaseLayout title="关于" description="关于这个博客，以及写它的人。">
+<BaseLayout title="关于" description="关于本站及写它的人。">
 	<article class="post">
 		<header class="post-header">
 			<h1>关于 · Orivane</h1>
-			<p class="sub">一个写字的地方，记录一些灵感和思考</p>
+			<p class="sub">一个写字的地方，记录一些学习笔记、灵感和思考</p>
 		</header>
 
 		<div class="prose">
 			<p>
-				这里放的是长文：技术学习笔记、读完一本书之后的感想、以及一些没地方安放的生活碎片。
+				这里放一些本人的记录：技术学习笔记、读完一本书之后的感想、以及一些没地方安放的生活碎片。
 			</p>
 
 			<h2>关于我</h2>
-			<p>Orivane，一个平平无奇的大学生，在此处记录一些灵感和思考。</p>
-			<p>日常喜爱阅读、听音乐、看电影而已, 同时算是一个ACG lover。</p>
+			<p>Orivane，一个平平无奇的大学生，在此处记录一些学习日常、灵感和思考。</p>
+			<p>日常喜欢阅读、听音乐、看电影，同时算是一个 ACG lover。</p>
+
+			<ul class="fact-list">
+				<li>
+					<span class="fact-key">坐标</span>
+					<span class="fact-value">中国 · 北京</span>
+				</li>
+				<li>
+					<span class="fact-key">正在</span>
+					<span class="fact-value">某高校 · 通信工程 · 本科在读</span>
+				</li>
+			</ul>
 
 			<h2>关于这个站</h2>
 			<p>
-				用 <a href="https://astro.build/">Astro</a>{" "}
-				构建，没有后端、没有数据库， 文章就是{" "}
-				<code>src/content/blog/</code> 下的 Markdown 文件。
-				排版参数按中文长文调过：正文 <code>36em</code> 宽、行高{" "}
-				<code>1.85</code>， 全站只有一个强调色。
+				用 <a href="https://astro.build/">Astro</a> 构建，纯静态站，没有后端和数据库。
+				排版按中文长文调过：正文 <code>36em</code> 宽、行高 <code>1.9</code>，全站只有一个强调色。
 			</p>
 
-			<h2>联系</h2>
+			<h2>联系我</h2>
 			<p>
-				邮件：<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>　·　
+				邮件：<a href={`mailto:${CONTACT_EMAIL}`}>{CONTACT_EMAIL}</a>
+				<br />
 				GitHub：<a href={GITHUB_URL} target="_blank" rel="noreferrer">@{GITHUB_HANDLE}</a>
 			</p>
 		</div>
+
 		<p class="post-signature">
 			<Signature size="sm" />
 		</p>
